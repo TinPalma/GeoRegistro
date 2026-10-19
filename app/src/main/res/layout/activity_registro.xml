@@ -7,9 +7,10 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"
-        android:layout_width="411dp"
-        android:layout_height="603dp"
+        android:layout_width="382dp"
+        android:layout_height="589dp"
         android:layout_marginBottom="52dp"
+        android:background="#2B4CFA"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,24 +33,24 @@
 
         <EditText
             android:id="@+id/editTextText2"
-            android:layout_width="221dp"
-            android:layout_height="64dp"
-            android:ems="10"
-            android:hint="Descripción *"
-            android:inputType="textMultiLine"
-            app:layout_constraintBottom_toTopOf="@+id/spinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Descripción"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            app:layout_constraintBottom_toTopOf="@+id/textView3"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextText"
-            app:layout_constraintVertical_bias="0.5" />
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="220dp"
+            android:layout_marginTop="172dp"
             android:text="Categoría *"
             app:layout_constraintEnd_toEndOf="@+id/spinner"
+            app:layout_constraintHorizontal_bias="0.493"
             app:layout_constraintStart_toStartOf="@+id/spinner"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -65,27 +66,26 @@
 
         <EditText
             android:id="@+id/editTextText3"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:clickable="false"
-            android:ems="10"
-            android:focusable="false"
-            android:hint="Fecha y Hora *"
-            android:inputType="none"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="48dp"
+            android:enabled="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:hint="Fecha y Hora"
+            android:inputType="text"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/spinner"
-            app:layout_constraintVertical_bias="0.17" />
+            app:layout_constraintTop_toBottomOf="@+id/spinner" />
 
         <EditText
             android:id="@+id/editTextText4"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Coordenadas GPS"
-            android:focusable="false"
             android:clickable="true"
+            android:focusable="false"
+            android:hint="Coordenadas GPS"
             android:inputType="none"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/button4"
