@@ -1,7 +1,9 @@
 package cl.ipvg.georegistro;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -15,15 +17,19 @@ import java.util.List;
 
 public class ListadoActivity extends AppCompatActivity {
 
-    private ListView listViewIncidencias;
-    private FirebaseFirestore db;
-    private List<String> listaFormateada;
-    private ArrayAdapter<String> adapter;
+    ListView listViewIncidencias;
+    FirebaseFirestore db;
+    List<String> listaFormateada;
+    ArrayAdapter<String> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista);
+
+        Button Button6 = findViewById(R.id.button6);
+
+        Button6.setOnClickListener(v -> startActivity(new Intent(ListadoActivity.this, MainActivity.class)));
 
         listViewIncidencias = findViewById(R.id.listViewIncidencias);
         db = FirebaseFirestore.getInstance();
@@ -35,7 +41,7 @@ public class ListadoActivity extends AppCompatActivity {
         cargarIncidencias();
     }
 
-    private void cargarIncidencias() {
+    void cargarIncidencias() {
         db.collection("incidencias")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
@@ -59,4 +65,5 @@ public class ListadoActivity extends AppCompatActivity {
                     Toast.makeText(this, "Error de red: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
     }
+
 }

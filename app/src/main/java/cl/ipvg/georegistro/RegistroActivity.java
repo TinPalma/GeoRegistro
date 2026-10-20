@@ -15,10 +15,10 @@ import java.util.*;
 
 public class RegistroActivity extends AppCompatActivity {
 
-    private EditText Titulo, Descripcion, FechaHora, Coordenadas;
-    private Spinner Categoria;
-    private FusedLocationProviderClient clienterUbicacion;
-    private FirebaseFirestore db;
+    EditText Titulo, Descripcion, FechaHora, Coordenadas;
+    Spinner Categoria;
+    FusedLocationProviderClient clienterUbicacion;
+    FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +34,7 @@ public class RegistroActivity extends AppCompatActivity {
         clienterUbicacion = LocationServices.getFusedLocationProviderClient(this);
         db = FirebaseFirestore.getInstance();
 
-        String[] listaCategorias = {"Seleccione Categoria", "Vía Pública", "Seguridad", "Limpieza", "Otros"};
+        String[] listaCategorias = {"Categorias", "Vía Pública", "Seguridad", "Natural", "Limpieza", "Otros"};
         Categoria.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, listaCategorias));
         FechaHora.setText(new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(new Date()));
 
@@ -42,7 +42,7 @@ public class RegistroActivity extends AppCompatActivity {
         findViewById(R.id.button5).setOnClickListener(v -> guardarEnFirebase());
     }
 
-    private void obtenerUbicacion() {
+    void obtenerUbicacion() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
             return;
@@ -70,7 +70,7 @@ public class RegistroActivity extends AppCompatActivity {
         }
     }
 
-    private void guardarEnFirebase() {
+    void guardarEnFirebase() {
         String t = Titulo.getText().toString().trim(), d = Descripcion.getText().toString().trim(), c = Coordenadas.getText().toString().trim();
         if (t.isEmpty() || d.isEmpty() || c.isEmpty() || Categoria.getSelectedItemPosition() == 0) {
             Toast.makeText(this, "Complete todos los campos", Toast.LENGTH_SHORT).show();
