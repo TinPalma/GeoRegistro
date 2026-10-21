@@ -34,7 +34,7 @@ public class RegistroActivity extends AppCompatActivity {
         clienterUbicacion = LocationServices.getFusedLocationProviderClient(this);
         db = FirebaseFirestore.getInstance();
 
-        String[] listaCategorias = {"Categorias", "Vía Pública", "Seguridad", "Natural", "Limpieza", "Otros"};
+        String[] listaCategorias = {"Categorias", "Vía Pública", "Seguridad", "Natural", "Limpieza", "autos", "Otros"};
         Categoria.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, listaCategorias));
         FechaHora.setText(new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(new Date()));
 

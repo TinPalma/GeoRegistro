@@ -28,10 +28,10 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         db = FirebaseFirestore.getInstance();
 
-        // Se corrigió la búsqueda del ID para evitar NullPointerException / error de compilación
+
         Button buttonVolver = findViewById(R.id.Button7);
         if (buttonVolver == null) {
-            buttonVolver = findViewById(R.id.Button7); // Por si tu ID en el XML es button7
+            buttonVolver = findViewById(R.id.Button7);
         }
 
         if (buttonVolver != null) {
@@ -65,7 +65,7 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
         db.collection("incidencias")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    mMap.clear(); // Limpiar marcadores antiguos
+                    mMap.clear();
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         String titulo = doc.getString("titulo");
                         String categoria = doc.getString("categoria");

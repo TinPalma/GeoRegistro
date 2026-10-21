@@ -5,7 +5,7 @@ plugins {
     id("com.google.gms.google-services")
 }
 
-// Cargar propiedades desde local.properties
+
 val localProperties = Properties()
 val localPropertiesFile = rootProject.file("local.properties")
 if (localPropertiesFile.exists()) {
@@ -52,7 +52,7 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.material)
 
-    // Ubicación GPS y Google Maps
+    //  GPS y Google Maps
     implementation("com.google.android.gms:play-services-location:21.1.0")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("org.osmdroid:osmdroid-android:6.1.18")
