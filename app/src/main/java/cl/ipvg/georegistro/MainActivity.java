@@ -1,36 +1,90 @@
 package cl.ipvg.georegistro;
 
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
+
+    Button button, button2, button3;
+
+    SensorManager sensorManager;
+    Sensor sensorProximidad;
+
+    long ultimoAcceso;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        Button Button1 = findViewById(R.id.button);
-        Button Button2 = findViewById(R.id.button2);
-        Button Button3 = findViewById(R.id.button3);
+        button = findViewById(R.id.button);
+        button2 = findViewById(R.id.button2);
+        button3 = findViewById(R.id.button3);
 
-        Button1.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, RegistroActivity.class)));
-        Button2.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ListadoActivity.class)));
-        Button3.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, MapaActivity.class)));
+        if (button != null) {
+            button.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, RegistroActivity.class)));
+        }
+        if (button2 != null) {
+            button2.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ListadoActivity.class)));
+        }
+        if (button3 != null) {
+            button3.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, MapaActivity.class)));
+        }
 
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        if (sensorManager != null) {
+            sensorProximidad = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+        }
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        if (sensorProximidad == null) {
+            Toast.makeText(this, "Sensor de proximidad no disponible.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (sensorProximidad != null && sensorManager != null) {
+            sensorManager.registerListener(this, sensorProximidad, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        if (sensorManager != null) {
+            sensorManager.unregisterListener(this);
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
+            float distancia = event.values[0];
+
+            if (distancia < sensorProximidad.getMaximumRange()) {
+                long tiempoActual = System.currentTimeMillis();
+                if (ultimoAcceso + 2000 > tiempoActual) {
+                    return;
+                }
+                ultimoAcceso = tiempoActual;
+
+                Toast.makeText(this, "Gesto detectado: Abriendo Mapa...", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(MainActivity.this, MapaActivity.class));
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
 }
