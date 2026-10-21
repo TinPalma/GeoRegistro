@@ -2,60 +2,70 @@ package cl.ipvg.georegistro;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import org.osmdroid.config.Configuration;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.Marker;
+public class MapaActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-public class MapaActivity extends AppCompatActivity {
-
-    MapView map;
+    GoogleMap mMap;
     FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Configuration.getInstance().setUserAgentValue(getPackageName());
-        Configuration.getInstance().load(getApplicationContext(), PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
-
         setContentView(R.layout.activity_mapa);
 
-        map = findViewById(R.id.mapView);
-        map.setTileSource(TileSourceFactory.MAPNIK);
-        map.setMultiTouchControls(true);
+        db = FirebaseFirestore.getInstance();
 
-        GeoPoint startPoint = new GeoPoint(-36.5898, -72.0826);
-        map.getController().setZoom(14.0);
-        map.getController().setCenter(startPoint);
+        // Se corrigió la búsqueda del ID para evitar NullPointerException / error de compilación
+        Button buttonVolver = findViewById(R.id.Button7);
+        if (buttonVolver == null) {
+            buttonVolver = findViewById(R.id.Button7); // Por si tu ID en el XML es button7
+        }
 
-        Button Button7 = findViewById(R.id.Button7);
-        if (Button7 != null) {
-            Button7.setOnClickListener(v -> {
+        if (buttonVolver != null) {
+            buttonVolver.setOnClickListener(v -> {
                 startActivity(new Intent(MapaActivity.this, MainActivity.class));
                 finish();
             });
         }
 
-        db = FirebaseFirestore.getInstance();
-
-        cargarPuntosFirestore();
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.mapGoogle);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
     }
 
-    void cargarPuntosFirestore() {
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+
+        LatLng centroInicial = new LatLng(-36.5898, -72.0826);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(centroInicial, 13.0f));
+
+        cargarMarcadoresFirestore();
+    }
+
+    void cargarMarcadoresFirestore() {
         db.collection("incidencias")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
+                    mMap.clear(); // Limpiar marcadores antiguos
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         String titulo = doc.getString("titulo");
                         String categoria = doc.getString("categoria");
@@ -67,34 +77,22 @@ public class MapaActivity extends AppCompatActivity {
                                 double lat = Double.parseDouble(partes[0].trim());
                                 double lng = Double.parseDouble(partes[1].trim());
 
-                                GeoPoint punto = new GeoPoint(lat, lng);
-                                Marker marker = new Marker(map);
-                                marker.setPosition(punto);
-                                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-                                marker.setTitle(titulo != null ? titulo : "Incidencia");
-                                marker.setSnippet("Categoría: " + (categoria != null ? categoria : "N/A"));
+                                LatLng punto = new LatLng(lat, lng);
+                                String t = (titulo != null) ? titulo : "Incidencia";
+                                String snippet = "Categoría: " + ((categoria != null) ? categoria : "N/A");
 
-                                map.getOverlays().add(marker);
+                                mMap.addMarker(new MarkerOptions()
+                                        .position(punto)
+                                        .title(t)
+                                        .snippet(snippet));
+
                             } catch (NumberFormatException ignored) {
                             }
                         }
                     }
-                    map.invalidate();
                 })
                 .addOnFailureListener(e ->
-                        Toast.makeText(this, "Error al cargar datos: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Error al cargar marcadores: " + e.getMessage(), Toast.LENGTH_SHORT).show()
                 );
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        map.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        map.onPause();
     }
 }

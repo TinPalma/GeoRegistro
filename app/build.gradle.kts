@@ -1,6 +1,15 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     id("com.google.gms.google-services")
+}
+
+// Cargar propiedades desde local.properties
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
 }
 
 android {
@@ -16,8 +25,8 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // Inyección de la clave de Maps
-        val mapsApiKey = project.findProperty("MAPS_API_KEY") as? String ?: ""
+        // Inyección de la clave leyendo directamente desde local.properties
+        val mapsApiKey = localProperties.getProperty("MAPS_API_KEY") ?: ""
         manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
     }
 
@@ -48,8 +57,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("org.osmdroid:osmdroid-android:6.1.18")
 
-
-    // Firebase (Importante: El BoM debe ir primero)
+    // Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
     implementation("com.google.firebase:firebase-firestore")
 
