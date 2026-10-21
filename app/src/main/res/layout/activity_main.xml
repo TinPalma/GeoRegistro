@@ -54,7 +54,7 @@
         android:layout_height="56dp"
         android:layout_marginBottom="16dp"
         android:backgroundTint="#0052CC"
-        android:text="Consultar Historial"
+        android:text="Lista Incidencia"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         app:cornerRadius="8dp" />
@@ -63,13 +63,10 @@
         android:id="@+id/button3"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:layout_marginBottom="16dp"
         android:backgroundTint="#0052CC"
         android:text="Ver el Mapa"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         app:cornerRadius="8dp" />
-
-
 
 </LinearLayout>
